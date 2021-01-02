@@ -8,7 +8,7 @@
 {% set total_prize =  namespace(value=0) %}
 <body>
     <h2>Shopping cart</h2>
-    <form action="/root" method="get">
+    <form action="/" method="get">
         <input type="submit" class="cart-button" value="Katalog">
     </form>
     <table>
@@ -46,7 +46,7 @@
     <br><br><br>
 
     <h3>Personal data</h3>
-    <form action="/buy" method="POST">
+    <form action="/summary" method="GET">
         <p>
             <label for="first_name">First name</label><br>
             <input type="text" name="first_name" id="first_name">
