@@ -3,33 +3,72 @@
 <head>
     <link href="http://netdna.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <meta charset="UTF-8">
-    <title>Koszyk zakupów</title>
+    <title>Shopping-cart</title>
 </head>
 {% set total_prize =  namespace(value=0) %}
+<h2>Shopping cart</h2>
 <body>
-    <thead>
-        <tr>
-            <th scope="col">Nazwa produktów</th>
-            <th scope="col">Liczba</th>
-            <th scope="col">Cena</th>
-            <th scope="col">Cena w sumie</th>
-        </tr>
-    </thead>
+
+
     <table>
-        {%  for product in products %}
-        <tr>
-            <td class="product_name">{{ product.name }}</td>
-            <td class="count">{{product.count}}</td>
-            <td class="price">
-                 {{ product.price }}
-            </td>
-            <td class="total_prize">{{ product.price * product.count }}</td>
-        </tr>
-        {% set total_prize.value = total_prize.value +  product.price * product.count %}
-        {% endfor %}
+         <thead>
+            <tr>
+                <th scope="col">Product</th>
+                <th scope="col">Count</th>
+                <th scope="col">Price</th>
+                <th scope="col">Delete</th>
+    {#            <th scope="col">Cena w sumie</th>#}
+            </tr>
+        </thead>
+        <tbody>
+            {%  for product in products %}
+            <tr>
+                <td class="product_name">{{ product.name }}</td>
+                <td class="count">{{product.count}}</td>
+                <td class="price">
+                    <b>{{ product.price * product.count }}</b><br>
+                    {{ product.price }}
+                </td>
+                <td class="delete">
+                    <form action="/delete_from_cart" method="DELETE">
+                        <input type="hidden" value = {{product.id}}>
+                        <input type="submit" value = "Usuń">
+                    </form>
+                </td>
+            </tr>
+            {% set total_prize.value = total_prize.value +  product.price * product.count %}<br>
+            {% endfor %}
+        </tbody>
     </table>
 
-    <h2>Total prize: {{total_prize.value  }}</h2>
+    <h3>Total prize: {{total_prize.value  }}</h3>
+    <br><br><br>
+
+    <h3>Personal data</h3>
+    <form action="/buy" method="POST">
+        <p>
+            <p>
+                <label for="first_name">First name</label><br>
+                <input type="text" name="first_name" id="first_name">
+            </p>
+            <label for="surname">Surname</label><br>
+            <input type="text" name="surname" id="surname">
+        </p>
+        <p>
+            <label for="city">City</label><br>
+            <input type="text" id="city" name="city">
+            <label for="postal_code">Postal code</label><br>
+            <input type="text" id="postal_code" name="postal_code">
+        </p>
+        <p>
+            <label for="street">Street </label> <br>
+            <input type="text" id="street" name="street">
+            <label for="street_number">Street number</label><br>
+            <input type="number" id="street_number" name="street_number">
+        </p>
+
+        <input type="submit" value="Buy">
+    </form>
 
     <script src="http://netdna.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
