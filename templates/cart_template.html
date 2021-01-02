@@ -66,6 +66,11 @@
             <label for="street_number">Street number</label><br>
             <input type="number" id="street_number" name="street_number">
         </p>
+        <select name="dcompany" class="btn-secondary">
+          {% for comp in dcompanies %}
+              <option value="{{ comp }}">{{ comp }}</option>
+          {% endfor %}
+        </select>
         <input type="submit" value="Buy">
     </form>
 
