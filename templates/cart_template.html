@@ -8,8 +8,6 @@
 {% set total_prize =  namespace(value=0) %}
 <h2>Shopping cart</h2>
 <body>
-
-
     <table>
          <thead>
             <tr>
@@ -17,7 +15,7 @@
                 <th scope="col">Count</th>
                 <th scope="col">Price</th>
                 <th scope="col">Delete</th>
-    {#            <th scope="col">Cena w sumie</th>#}
+    {#          <th scope="col">Cena w sumie</th>#}
             </tr>
         </thead>
         <tbody>
@@ -41,24 +39,26 @@
         </tbody>
     </table>
 
-    <h3>Total prize: {{total_prize.value  }}</h3>
+    <h3>Total prize: {{total_prize.value}}</h3>
     <br><br><br>
 
     <h3>Personal data</h3>
     <form action="/buy" method="POST">
         <p>
-            <p>
-                <label for="first_name">First name</label><br>
-                <input type="text" name="first_name" id="first_name">
-            </p>
+            <label for="first_name">First name</label><br>
+            <input type="text" name="first_name" id="first_name">
             <label for="surname">Surname</label><br>
             <input type="text" name="surname" id="surname">
         </p>
         <p>
             <label for="city">City</label><br>
-            <input type="text" id="city" name="city">
+            <select name="city" class="btn-secondary">
+              {% for city in cities %}
+                  <option value="{{ city }}">{{ city }}</option>
+              {% endfor %}
+            </select>
             <label for="postal_code">Postal code</label><br>
-            <input type="text" id="postal_code" name="postal_code">
+            <input type="text" pattern="[0-9]{5}" name="postal_code" id="postal_code"/>
         </p>
         <p>
             <label for="street">Street </label> <br>
@@ -66,7 +66,11 @@
             <label for="street_number">Street number</label><br>
             <input type="number" id="street_number" name="street_number">
         </p>
-
+        <select name="dcompany" class="btn-secondary">
+          {% for comp in dcompanies %}
+              <option value="{{ comp }}">{{ comp }}</option>
+          {% endfor %}
+        </select>
         <input type="submit" value="Buy">
     </form>
 
