@@ -1,8 +1,12 @@
 from fastapi import FastAPI, Request, Form
 from fastapi.templating import Jinja2Templates
 from starlette.responses import RedirectResponse
+from datetime import datetime
+from constants import months
+import calendar
 import uvicorn
 import sqlite3
+import pandas as pd
 
 app = FastAPI()
 templates = Jinja2Templates(directory='templates')
@@ -16,12 +20,15 @@ pagination_iterator = 0
 def root(request: Request, message: str = "Wybierz sobie jakiś produkt do zakupienia"):
     with sqlite3.connect('db.db') as connection:
         products_db = connection.execute(
-            f"SELECT id, name, price FROM products LIMIT 20 OFFSET {20 * pagination_iterator}").fetchall()
+            f"SELECT id, name, price FROM products LIMIT 20 OFFSET {20 * pagination_iterator}"
+        ).fetchall()
 
     products_dictionary = [{"id": product[0], "name": product[1], "price": product[2]} for product in products_db]
 
-    return templates.TemplateResponse("root_template.html",
-                                      {"request": request, "message": message, "products": products_dictionary})
+    return templates.TemplateResponse(
+        "root_template.html",
+        {"request": request, "message": message, "products": products_dictionary}
+    )
 
 
 @app.post("/add_to_cart")
@@ -31,25 +38,28 @@ async def add_to_cart(
 ):
     with sqlite3.connect('db.db') as connection:
         product_db = connection.execute(f"SELECT name, price FROM products WHERE id={product_id}").fetchone()
+
     product = {"id": product_id, "count": num_products, "name": product_db[0], "price": product_db[1]}
     index: int
+
     try:
         index = bucket.index(product)
     except ValueError:
         bucket.append(product)
         print(bucket)
         return RedirectResponse(url=f"/?message=Dodano do koszyka produkt {product_db[0]} w ilości {num_products}")
+
     bucket[index]['count'] += num_products
     print(bucket)
+
     return RedirectResponse(url=f"/?message=Dodano do koszyka produkt {product_db[0]} w ilości {num_products}")
 
 
 @app.get("/cart")
 async def cart(request: Request):
     with sqlite3.connect('db.db') as connection:
-        cursor = connection.cursor()
-        companies_tuples = cursor.execute(f"SELECT name FROM companies").fetchall()
-        cities_tuples = cursor.execute(f"SELECT name FROM cities").fetchall()
+        companies_tuples = connection.execute(f"SELECT name FROM companies").fetchall()
+        cities_tuples = connection.execute(f"SELECT name FROM cities").fetchall()
 
     companies = [company[0] for company in companies_tuples]
     cities = [city[0] for city in cities_tuples]
@@ -58,6 +68,45 @@ async def cart(request: Request):
         "cart_template.html",
         {"request": request, "products": bucket, "cities": cities, "dcompanies": companies}
     )
+
+
+@app.get("/summary")
+def summarize(
+        request: Request,
+        city: str = Form(default=""),
+        street: str = Form(default=""),
+        dcompany: str = Form(default="DHL")
+):
+    company = sqlite3.connect('db.db').execute(f"SELECT id FROM companies WHERE name='{dcompany}'").fetchone()[0]
+    today = datetime.today()
+
+    records = [
+        {
+            'city': city,
+            'street': street,
+            'delivery_company': company,
+            'purchase_day': today.day,
+            'purchase_month': months[today.month],
+            'purchase_hour': today.hour,
+            'purchase_weekday': calendar.day_name[today.weekday()],
+            'category': sqlite3.connect('db.db').execute(
+                f"SELECT category FROM products WHERE id={item['id']}"
+            ).fetchone()[0],
+        } for item in bucket]
+
+    delivery_time = max([predict_delivery_time(record) for record in records])
+
+    bucket.clear()
+
+    return templates.TemplateResponse(
+        "confirmation_template.html",
+        {"request": request, "delivery_time": delivery_time}
+    )
+
+
+def predict_delivery_time(record):
+    print(record)
+    return 24
 
 
 if __name__ == "__main__":
