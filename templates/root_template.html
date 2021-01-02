@@ -12,7 +12,9 @@
           {{ message}}
         </div>
     {% endif %}
-
+    <form action="go_to_cart" method="get">
+        <input type="submit" class="cart-button" value="Koszyk">
+    </form>
 
     <table>
         <thead>
@@ -44,6 +46,17 @@
             {% endfor %}
         </tbody>
     </table>
+    <p>
+    <div class="btn-group" role="group" aria-label="Basic example">
+        <form action="/prev" method="POST">
+            <input type="submit" class="btn-primary" name="prev" value="Poprzednia strona">
+        </form>
+        <form action="/next" method="POST">
+            <input type="submit" class="btn-primary" name="next" value=" Następna strona ">
+        </form>
+    </div>
+
+
 
 
 

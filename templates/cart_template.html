@@ -6,8 +6,11 @@
     <title>Shopping-cart</title>
 </head>
 {% set total_prize =  namespace(value=0) %}
-<h2>Shopping cart</h2>
 <body>
+    <h2>Shopping cart</h2>
+    <form action="/root" method="get">
+        <input type="submit" class="cart-button" value="Katalog">
+    </form>
     <table>
          <thead>
             <tr>
