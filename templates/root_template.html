@@ -17,24 +17,21 @@
         </thead>
         <tbody>
             {%  for product in products %}
-
             <tr>
                 <form action="/add_to_cart" method="POST">
                     <td class="product_name">{{ product.name }}</td>
                     <td class="count">
                         <label for="num_products">Number of products:</label>
-                        <input type="number" id="num_products" name="num_products"
+                        <input type="number" id="num_products" name="num_products" value="1"
                          min="0" max="100">
                     </td>
                     <td class="cart">
                         {{ product.price }}
                         <input type="hidden" name="id" value={{ product.id}} >
-                        <input type="submit" name="add_to_cart" value="Dodaj do koszyka">
-
+                        <input type="submit" class="btn-primary" name="add_to_cart" value="Dodaj do koszyka">
                     </td>
                 </form>
             </tr>
-
             {% endfor %}
         </tbody>
     </table>
