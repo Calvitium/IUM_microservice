@@ -8,7 +8,15 @@ templates = Jinja2Templates(directory='templates')
 
 @app.get("/")
 def root(request: Request):
-    return templates.TemplateResponse("root_template.html", {"request": request, "message": "Hello world!"})
+    products = [{"name":"God of War","count":2,"price":29.99,"id":1},\
+               {"name":"Celeste","count":3,"price":9.99,"id":2}]
+
+    return templates.TemplateResponse("root_template.html", {"request": request, "message": "Hell world!","products":products})
+
+@app.post("/add_to_cart")
+def add_to_cart(request: Request):
+    id = request.forms.get("id")
+    print(id)
 
 
 if __name__ == "__main__":

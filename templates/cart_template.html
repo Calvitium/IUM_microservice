@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <meta charset="UTF-8">
+    <title>Koszyk zakupów</title>
+</head>
+{% set total_prize =  namespace(value=0) %}
+<body>
+    <thead>
+        <tr>
+            <th scope="col">Nazwa produktów</th>
+            <th scope="col">Liczba</th>
+            <th scope="col">Cena</th>
+            <th scope="col">Cena w sumie</th>
+        </tr>
+    </thead>
+    <table>
+        {%  for product in products %}
+        <tr>
+            <td class="product_name">{{ product.name }}</td>
+            <td class="count">{{product.count}}</td>
+            <td class="price">
+                 {{ product.price }}
+            </td>
+            <td class="total_prize">{{ product.price * product.count }}</td>
+        </tr>
+        {% set total_prize.value = total_prize.value +  product.price * product.count %}
+        {% endfor %}
+    </table>
+
+    <h2>Total prize: {{total_prize.value  }}</h2>
+
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+</body>
+</html>
