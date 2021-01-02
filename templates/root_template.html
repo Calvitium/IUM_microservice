@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link href="http://netdna.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
+     <link href="http://netdna.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <meta charset="UTF-8">
     <title>ESzopping</title>
 </head>
@@ -10,9 +10,9 @@
     <table>
         <thead>
             <tr>
-                <th scope="col">Product</th>
-                <th scope="col">Count</th>
-                <th scope="col">Price</th>
+                <th scope="col">Nazwa produktów</th>
+                <th scope="col">Liczba</th>
+                <th scope="col">Cena</th>
             </tr>
         </thead>
         <tbody>
@@ -27,7 +27,7 @@
                     </td>
                     <td class="cart">
                         {{ product.price }}
-                        <input type="hidden" name="id" value={{ product.id}} >
+                        <input type="hidden" name="product_id" value={{ product.id }} >
                         <input type="submit" class="btn-primary" name="add_to_cart" value="Dodaj do koszyka">
                     </td>
                 </form>
