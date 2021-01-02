@@ -1,51 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-     <link href="http://netdna.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <meta charset="UTF-8">
     <title>ESzopping</title>
 </head>
 <body>
-    <h1>Katalog produktów</h1>
-    {% if message != "" %}
-        <div class="alert alert-success" role="alert">
-          {{ message}}
-        </div>
-    {% endif %}
+<h1>Katalog produktów</h1>
+{% if message != "" %}
+    <div class="alert alert-success" role="alert">
+        {{ message }}
+    </div>
+{% endif %}
 
 
-    <table>
-        <thead>
-            <tr>
-                <th scope="col">Nazwa produktów</th>
-                <th scope="col">Liczba</th>
-                <th scope="col">Cena</th>
-                <th scope="col"></th>
-            </tr>
-        </thead>
-        <tbody>
-            {%  for product in products %}
-            <tr>
-                <form action="/add_to_cart" method="POST">
-                    <td class="product_name">{{ product.name }}</td>
-                    <td class="count">
-                        <input type="number" id="num_products" name="num_products" value="1"
-                         min="0" max="100">
-                    </td>
-                    <td class="cart">
-                        {{ product.price }}
-                    </td>
-                    <td>
-                        <input type="hidden" name="product_id" value={{product.id}} >
-                        <input type="submit" class="btn-primary" name="add_to_cart" value="Dodaj do koszyka">
-                    </td>
-                </form>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-
+<table>
+    <thead>
+    <tr>
+        <th scope="col">Nazwa produktów</th>
+        <th scope="col">Liczba</th>
+        <th scope="col">Cena</th>
+        <th scope="col"></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for product in products %}
+        <tr>
+            <form action="/add_to_cart" method="POST">
+                <td class="product_name" name="product_name" >{{ product.name }}</td>
+                <td class="count">
+                    <input type="number" id="num_products" name="num_products" value="1"
+                           min="0" max="100">
+                </td>
+                <td class="cart" name="product_price">{{ product.price }}</td>
+                <td>
+                    <input type="hidden" name="product_id" value={{ product.id }}>
+                    <input type="submit" class="btn-primary" name="add_to_cart" value="Dodaj do koszyka">
+                </td>
+            </form>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
 
 
 <script src="http://netdna.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
