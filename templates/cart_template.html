@@ -32,7 +32,6 @@
             </td>
             <td class="delete">
                 <form action="/cart/{{ product.id }}" method="post">
-{#                    <input type="hidden" value= {{ product.id }}>#}
                     <input type="submit" value="Usuń">
                 </form>
             </td>
@@ -46,7 +45,7 @@
 <br><br><br>
 
 <h3>Personal data</h3>
-<form action="/summary" method="GET">
+<form action="/summary" method="post">
     <p>
         <label for="first_name">First name</label><br>
         <input type="text" name="first_name" id="first_name">

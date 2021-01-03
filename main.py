@@ -82,8 +82,8 @@ async def cart(request: Request):
     )
 
 
-@app.get("/summary")
-def summarize(
+@app.post("/summary")
+def summary(
         request: Request,
         city: str = Form(default=""),
         street: str = Form(default=""),
