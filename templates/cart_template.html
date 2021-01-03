@@ -31,8 +31,8 @@
                 {{ product.price }}
             </td>
             <td class="delete">
-                <form action="/delete_from_cart" method="DELETE">
-                    <input type="hidden" value= {{ product.id }}>
+                <form action="/cart/{{ product.id }}" method="post">
+{#                    <input type="hidden" value= {{ product.id }}>#}
                     <input type="submit" value="Usuń">
                 </form>
             </td>

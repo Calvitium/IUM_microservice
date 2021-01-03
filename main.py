@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, Form
+from fastapi import FastAPI, Request, Form, status
 from fastapi.templating import Jinja2Templates
 from starlette.responses import RedirectResponse
 from datetime import datetime
@@ -55,6 +55,18 @@ async def add_to_cart(
     return RedirectResponse(url=f"/?message=Dodano do koszyka produkt {product_db[0]} w ilości {num_products}")
 
 
+@app.post("/cart/{product_id}")
+def delete_from_cart(product_id: int = -1):
+    try:
+        to_delete = next(item for item in bucket if item['id'] == product_id)
+        bucket.remove(to_delete)
+    except StopIteration:
+        pass
+
+    return RedirectResponse(url="/cart")
+
+
+@app.post("/cart")
 @app.get("/cart")
 async def cart(request: Request):
     with sqlite3.connect('db.db') as connection:
@@ -107,6 +119,24 @@ def summarize(
 def predict_delivery_time(record):
     print(record)
     return 24
+
+
+@app.get("/prev")
+def decrement_pagination():
+    global pagination_iterator
+
+    pagination_iterator -= 0 if pagination_iterator <= 0 else 1
+
+    return RedirectResponse(url="/?message=Wybierz sobie coś do kupienia")
+
+
+@app.get("/next")
+def increment_pagination():
+    global pagination_iterator
+
+    pagination_iterator += 1
+
+    return RedirectResponse(url="/?message=Wybierz sobie coś do kupienia")
 
 
 if __name__ == "__main__":
