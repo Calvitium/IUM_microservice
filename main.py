@@ -1,14 +1,16 @@
+import calendar
+import sqlite3
+from datetime import datetime
+
+import joblib
+import pandas as pd
+import uvicorn
 from fastapi import FastAPI, Request, Form, status
 from fastapi.templating import Jinja2Templates
-from starlette.responses import RedirectResponse
-from datetime import datetime
-from constants import months
-import calendar
-import uvicorn
-import sqlite3
-import pandas as pd
-import joblib
 from sklearn.svm import SVR
+from starlette.responses import RedirectResponse
+
+from constants import months
 
 app = FastAPI()
 templates = Jinja2Templates(directory='templates')
