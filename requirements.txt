@@ -5,7 +5,6 @@ attrs==20.3.0
 backcall==0.2.0
 bleach==3.2.1
 bottle==0.12.19
-category-encoders @ git+https://github.com/scikit-learn-contrib/category_encoders@ea9428a896bef77baf8b26159f7030cee924e916
 cffi==1.14.4
 click==7.1.2
 colorama==0.4.4
