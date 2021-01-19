@@ -7,9 +7,13 @@ import calendar
 import uvicorn
 import sqlite3
 import pandas as pd
+import joblib
+from sklearn.svm import SVR
 
 app = FastAPI()
 templates = Jinja2Templates(directory='templates')
+
+prediction_model = joblib.load("./models/model.joblib")
 
 bucket = []  # elements as a tuple of (product_id, count)
 pagination_iterator = 0
@@ -92,21 +96,26 @@ def summary(
     company = sqlite3.connect('db.db').execute(f"SELECT id FROM companies WHERE name='{dcompany}'").fetchone()[0]
     today = datetime.today()
 
-    records = [
-        {
-            'city': city,
-            'street': street,
-            'delivery_company': company,
-            'purchase_day': today.day,
-            'purchase_month': months[today.month],
-            'purchase_hour': today.hour,
-            'purchase_weekday': calendar.day_name[today.weekday()],
-            'category': sqlite3.connect('db.db').execute(
-                f"SELECT category FROM products WHERE id={item['id']}"
-            ).fetchone()[0],
-        } for item in bucket]
+    records = {
+        'city': [],
+        'delivery_company': [],
+        'purchase_hour': [],
+        'purchase_weekday': [],
+        'category': []
+    }
 
-    delivery_time = max([predict_delivery_time(record) for record in records])
+    for item in bucket:
+        records['city'].append(city)
+        records['delivery_company'].append(company)
+        records['purchase_hour'].append(today.hour)
+        records['purchase_weekday'].append(calendar.day_name[today.weekday()])
+        records['category'].append(sqlite3.connect('db.db').execute(
+            f"SELECT category FROM products WHERE id={item['id']}").fetchone()[0])
+
+    data = pd.DataFrame.from_dict(records)
+    data = pd.get_dummies(data)
+
+    delivery_time = predict_shipping_time(data)
 
     bucket.clear()
 
@@ -116,8 +125,10 @@ def summary(
     )
 
 
-def predict_delivery_time(record):
-    print(record)
+def predict_shipping_time(data):
+    print(data)
+    approximated_shipping_time = prediction_model.predict(data)
+    print(approximated_shipping_time)
     return 24
 
 
