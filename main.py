@@ -5,17 +5,15 @@ from datetime import datetime
 import joblib
 import pandas as pd
 import uvicorn
-from fastapi import FastAPI, Request, Form, status
+from fastapi import FastAPI, Request, Form
 from fastapi.templating import Jinja2Templates
-from sklearn.svm import SVR
 from starlette.responses import RedirectResponse
-
-from constants import months
 
 app = FastAPI()
 templates = Jinja2Templates(directory='templates')
 
-prediction_model = joblib.load("./models/model.joblib")
+prediction_model = joblib.load("./models/svr1.joblib")
+encoder = joblib.load("./models/enc.joblib")
 
 bucket = []  # elements as a tuple of (product_id, count)
 pagination_iterator = 0
@@ -97,13 +95,11 @@ def summary(
 ):
     company = sqlite3.connect('db.db').execute(f"SELECT id FROM companies WHERE name='{dcompany}'").fetchone()[0]
     today = datetime.today()
-
     records = {
         'city': [],
         'delivery_company': [],
         'purchase_hour': [],
         'purchase_weekday': [],
-        'category': []
     }
 
     for item in bucket:
@@ -111,12 +107,10 @@ def summary(
         records['delivery_company'].append(company)
         records['purchase_hour'].append(today.hour)
         records['purchase_weekday'].append(calendar.day_name[today.weekday()])
-        records['category'].append(sqlite3.connect('db.db').execute(
-            f"SELECT category FROM products WHERE id={item['id']}").fetchone()[0])
 
     data = pd.DataFrame.from_dict(records)
-    data = pd.get_dummies(data)
 
+    data = encoder.transform(data).toarray()
     delivery_time = predict_shipping_time(data)
 
     bucket.clear()
@@ -128,10 +122,8 @@ def summary(
 
 
 def predict_shipping_time(data):
-    print(data)
     approximated_shipping_time = prediction_model.predict(data)
-    print(approximated_shipping_time)
-    return 24
+    return approximated_shipping_time[0]
 
 
 @app.get("/prev")
